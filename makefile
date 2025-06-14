@@ -2,7 +2,7 @@ CXXFLAGS =
 CXX = g++ -std=c++20
 
 TARGET = doone
-SRC = src/*.cpp
+SRC = src/main.cpp
 
 all: $(TARGET)
 
