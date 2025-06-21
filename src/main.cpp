@@ -19,13 +19,13 @@ const int n_train_images = 60000; // No. of training images
 const int n_test_images = 10000; // No. of images for testing
 
 // no. of neurons in each layers.
-const vector<int> n_neurons = {n_input, 10, 10};
+const vector<int> n_neurons = {n_input, 128, 10};
 const int n_layers = (int)n_neurons.size();
 
 // epochs = Number of iterations of entire dataset while training
 // learning_rate = Learing rate
-const int epochs = 20;
-const double learning_rate = 0.1;
+const int epochs = 5;
+const double learning_rate = 0.001;
 
 struct Image{
     private:
@@ -71,6 +71,22 @@ unsigned int in(std::ifstream& icin, unsigned int inp_size) {
         ans += temp;
     }
     return ans;
+}
+
+void about() {
+    int par = 0;
+    cout << "Network structure ";
+    for (int l = 0; l < n_layers; l++) {
+        if (l) { 
+            cout << " x "; 
+            // Total weights and biases
+            par += n_neurons[l]*(n_neurons[l - 1] + 1);
+        }
+        cout << n_neurons[l];
+    }
+    cout << "\nParameters: " << par;
+    cout << '\n' << "Epoch: " << epochs << "\nLearning rate: " << learning_rate << endl;
+
 }
 
 void load_images() {
@@ -239,12 +255,14 @@ int guess() {
 }
 
 void train() {
-    int n_batch = 1000; // No. of training samples in each mini-batch
+    int n_batch = 50; // No. of training samples in each mini-batch
     vector<int> id(n_train_images);
     std::iota(id.begin(), id.end(), 0);
     std::random_device rd;
     std::mt19937 gen(rd());
     std::shuffle(id.begin(), id.end(), gen);
+
+    load_network();
 
     // initialise cum_delta_w
     for (int l = 0; l < n_layers - 1; l++) {
@@ -377,8 +395,9 @@ int main() {
     load_images();
     reset_variables();
 
-    //train();
-    test();
+    about();
+    train();
+    //test();
     return 0;
 }
 
